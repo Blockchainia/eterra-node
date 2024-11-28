@@ -2,6 +2,12 @@
 
 pub use pallet::*;
 
+#[cfg(test)]
+mod mock;
+
+#[cfg(test)]
+mod tests;
+
 #[frame_support::pallet]
 pub mod pallet {
 	use frame_support::{
@@ -12,10 +18,11 @@ pub mod pallet {
 	};
 	use frame_system::pallet_prelude::*;
 	use scale_info::TypeInfo;
+	use serde::{Deserialize, Serialize};
 	use sp_runtime::traits::Hash;
 
 	#[pallet::pallet]
-	#[pallet::without_storage_info] // Recommended to avoid unnecessary storage info generation
+	#[pallet::without_storage_info]
 	pub struct Pallet<T>(_);
 
 	#[pallet::config]
@@ -24,7 +31,9 @@ pub mod pallet {
 		type Currency: Currency<Self::AccountId> + ReservableCurrency<Self::AccountId>;
 	}
 
-	#[derive(Encode, Decode, Clone, PartialEq, Eq, Debug, TypeInfo, MaxEncodedLen)]
+	#[derive(
+		Encode, Decode, Clone, PartialEq, Eq, Debug, TypeInfo, MaxEncodedLen, Serialize, Deserialize,
+	)]
 	pub struct Card {
 		pub level: u32,
 		pub hp: u32,
@@ -51,11 +60,32 @@ pub mod pallet {
 		CardAlreadyExists,
 	}
 
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub cards: Vec<(T::Hash, Card, T::AccountId)>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self { cards: Vec::new() }
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			for (card_id, card, owner) in &self.cards {
+				Cards::<T>::insert(card_id, card);
+				OwnerOf::<T>::insert(card_id, owner);
+			}
+		}
+	}
+
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
-		/// Create a new card.
 		#[pallet::call_index(0)]
-		#[pallet::weight(Weight::from_parts(10_000, 0))] // Explicit weight type
+		#[pallet::weight(Weight::from_parts(10_000, 0))]
 		pub fn create_card(origin: OriginFor<T>, stats: Card) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 
