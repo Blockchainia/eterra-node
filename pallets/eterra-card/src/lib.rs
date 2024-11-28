@@ -38,6 +38,26 @@ pub mod pallet {
 		pub level: u32,
 		pub hp: u32,
 		pub mp: u32,
+		pub attack: u32,
+		pub defense: u32,
+		pub magic_strength: u32,
+		pub magic_defense: u32,
+		pub agility: u32,
+		pub spirit: u32,
+		pub luck: u32,
+		pub elemental_defenses: ElementalDefenses,
+	}
+
+	#[derive(
+		Encode, Decode, Clone, PartialEq, Eq, Debug, TypeInfo, MaxEncodedLen, Serialize, Deserialize,
+	)]
+	pub struct ElementalDefenses {
+		pub earth: u32,
+		pub water: u32,
+		pub wind: u32,
+		pub fire: u32,
+		pub lightning: u32,
+		pub ice: u32,
 	}
 
 	#[pallet::storage]
