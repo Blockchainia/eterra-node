@@ -39,6 +39,7 @@ pub use frame_support::{
 };
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
+pub use pallet_eterra_card;
 pub use pallet_timestamp::Call as TimestampCall;
 use pallet_transaction_payment::{ConstFeeMultiplier, CurrencyAdapter, Multiplier};
 #[cfg(any(feature = "std", test))]
@@ -277,6 +278,11 @@ impl pallet_ajuna_board::Config for Runtime {
 	type Players = frame_support::traits::ConstU32<2>;
 }
 
+impl pallet_eterra_card::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub struct Runtime
@@ -294,6 +300,7 @@ construct_runtime!(
 		Sudo: pallet_sudo,
 		AjunaBoard: pallet_ajuna_board,
 		AjunaMatchmaker: pallet_ajuna_matchmaker,
+	  Cards: pallet_eterra_card::{Pallet, Call, Storage, Event<T>},
 	}
 );
 
