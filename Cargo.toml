@@ -1,10 +1,50 @@
 [workspace]
-resolver = "2"
 members = [
     "node",
-	"pallets/ajuna-board",
-	"pallets/ajuna-matchmaker",
+    "pallets/ajuna-board",
+    "pallets/ajuna-matchmaker",
+    "pallets/eterra-card",
     "runtime",
 ]
+resolver = "2"
+
 [profile.release]
 panic = "unwind"
+
+[workspace.dependencies]
+# Common Dependencies
+codec = { package = "parity-scale-codec", version = "3.7.0", default-features = false, features = ["derive", "max-encoded-len"] }
+scale-info = { version = "2.11.6", default-features = false, features = ["derive"] }
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+clap = { version = "4.5.21", features = ["derive"] }
+futures = { version = "0.3.31", features = ["thread-pool"] }
+jsonrpsee = { version = "0.16.3", features = ["server"] }
+
+# Substrate Dependencies (from Substrate repository, branch polkadot-v0.9.42)
+frame-support = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+frame-system = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+frame-executive = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+
+sp-core = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+sp-io = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+sp-runtime = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+sp-std = { git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "polkadot-v0.9.42" }
+
+# Node-Specific Dependencies
+sc-cli = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "0.10.0-dev" }
+sc-service = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "0.10.0-dev" }
+sc-executor = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "0.10.0-dev" }
+sc-telemetry = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "4.0.0-dev" }
+sc-keystore = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "4.0.0-dev" }
+sc-transaction-pool = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "4.0.0-dev" }
+sc-transaction-pool-api = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "4.0.0-dev" }
+sc-client-api = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42", version = "4.0.0-dev" }
+
+# Build Dependencies (shared across crates)
+substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.42" }
+
+# Local Pallet Dependencies
+pallet-ajuna-board = { path = "pallets/ajuna-board", version = "0.1.0", default-features = false }
+pallet-ajuna-matchmaker = { path = "pallets/ajuna-matchmaker", version = "0.1.0", default-features = false }
+pallet-eterra-card = { path = "pallets/eterra-card", version = "0.1.0", default-features = false }
+ajuna-node-template-runtime = { path = "runtime", version = "0.1.0" }
